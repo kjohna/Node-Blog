@@ -48,4 +48,19 @@ router.post('/', async(req, res) => {
   }
 });
 
+// delete a post matching :id
+router.delete('/:id', async(req, res) => {
+  try {
+    const delId = req.params.id
+    const numDeleted = await postDb.remove(delId);
+    if (numDeleted < 1) {
+      res.status(404).json({ message: "Could not find a post with that id." });
+    } else {
+      res.status(200).json({ message: `Successfully deleted post, id: ${delId}`});
+    }
+  } catch {
+    res.status(500).json({ error: "The post could not be deleted." });
+  }
+});
+
 module.exports = router;
