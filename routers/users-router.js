@@ -33,6 +33,32 @@ router.get('/:id', async(req, res) => {
   }
 });
 
+// return all posts matching user :id
+router.get('/:id/posts', async(req, res) => {
+  try {
+    const userId = req.params.id;
+    const posts = await userDb.getUserPosts(userId);
+    if (posts.length < 1) {
+      // check if user exists
+      try {
+        const user = await userDb.getById(userId);
+        if (user.length < 1) {
+          res.status(404).json({ message: "No users found with that id." });
+        } else {
+          res.status(404).json({ message: "User has no posts." });
+        }
+      } catch {
+        res.status(500).json({ error: "The user could not be retrieved while searching for posts (is there a user by that ID?)." });
+      }
+    } else {
+      // post(s) returned
+      res.status(200).json(posts);
+    }
+  } catch {
+    res.status(500).json({ error: "posts for that user could not be retrieved." });
+  }
+});
+
 // insert new user to db, user data from req.body
 router.post('/', async(req, res) => {
   try {
