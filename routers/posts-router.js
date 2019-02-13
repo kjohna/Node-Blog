@@ -33,4 +33,19 @@ router.get('/:id', async(req, res) => {
   }
 });
 
+// insert new post to db, post data from req.body
+router.post('/', async(req, res) => {
+  try {
+    const postData = req.body;
+    if (!postData.user_id || ! postData.text) {
+      res.status(400).json({ error: "User ID and Text are required for a post." });
+    } else {
+      newId = await postDb.insert(postData);
+      res.status(200).json({ success: true, message: postData });
+    }
+  } catch {
+    res.status(500).json({ error: "Saving post failed." });
+  }
+});
+
 module.exports = router;
