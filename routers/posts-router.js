@@ -18,4 +18,19 @@ router.get('/', async(req, res) => {
   }
 });
 
+// return post with matching :id
+router.get('/:id', async(req, res) => {
+  try {
+    const post = await postDb.getById(req.params.id);
+    console.log("post: ", post);
+    if (post.length < 1) {
+      res.status(404).json({ message: "No posts found with that id." })
+    } else {
+      res.status(200).json(post)
+    }
+  } catch {
+    res.status(500).json({ error: "The post could not be retrieved." })
+  }
+});
+
 module.exports = router;
