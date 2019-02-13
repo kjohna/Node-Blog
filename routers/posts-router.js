@@ -63,4 +63,25 @@ router.delete('/:id', async(req, res) => {
   }
 });
 
+// update a post matching :id
+router.put('/:id', async(req, res) => {
+  try {
+    const putId = req.params.id;
+    const postData = req.body;
+    if (!postData.text) {
+      res.status(400).json({ error: "Must provide text to update."})
+    } else {
+      const numUpdated = await postDb.update(putId, postData);
+      if ( numUpdated < 1) {
+        res.status(404).json({ error: `The post with id: ${putId} does not exist` });
+      } else {
+        // PUT was successful
+        res.status(200).json({ message: `Successfully update post id: ${putId}`});
+      }
+    }
+  } catch {
+    res.status(500).json({ error: "The post could not be updated." });
+  }
+});
+
 module.exports = router;
