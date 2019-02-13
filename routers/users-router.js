@@ -78,6 +78,7 @@ router.post('/', async(req, res) => {
 router.delete('/:id', async(req, res) => {
   try {
     const delId = req.params.id
+    // todo: if user has posts, must delete those before deleting user
     const numDeleted = await userDb.remove(delId);
     if (numDeleted < 1) {
       res.status(404).json({ message: "Could not find a user with that id." });
